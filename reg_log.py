@@ -1,33 +1,23 @@
 import sqlite3 as sql
 from users import Users
 
-# Простая база данных пользователей (замените на реальную базу данных)
 
 users_database = {}
 
-
-# Функция для регистрации пользователей
+# - - - - - - - - Функция для регистрации пользователей - - - - - - - - - - - - - - - - - - - - #
 def register():
     username = input("Введите имя пользователя: ")
     password = input("Введите пароль: ")
-
-    if username in users_database:
-        print("Такой пользователь уже существует!")
+    searcher = cur.execute(f"""SELECT * FROM users WHERE username ='{username}' AND password = '{password}';""")
+    if searcher.fetchone() is not None:
+        return "Такой пользователь уже зарегистрирован!"
     else:
         users_database[username] = password
         print("Вы успешно зарегистрировались!")
         return users_database
 
 
-# Функция для проверки введенного пароля
-def check_password(username, password):
-    if username in users_database and users_database[username] == password:
-        return True
-    else:
-        return False
-
-
-# Основная функция авторизации
+# - - - - - - - - - Основная функция авторизации - - - - - - - - - - - - - - - - - - - - - - - - #
 def login():
     username = input("Введите имя пользователя: ")
     password = input("Введите пароль: ")
@@ -37,6 +27,8 @@ def login():
     else:
         return "Неверный логин или пароль!"
 
+
+# - - - - - - - - - Коннектор для работы с базой данных - - - - - - - - - - - - - - - - - - - - - #
 
 with sql.connect('users.db') as conn:
     cur = conn.cursor()
@@ -70,3 +62,4 @@ with sql.connect('users.db') as conn:
             SELECT * FROM users;""")
             for row in sel:
                 print(row)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
